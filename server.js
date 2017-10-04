@@ -56,20 +56,18 @@ App.get('/test-db-create-collection', function (req, res) {
     console.log("Database connection successfull");
   });
 
-  res.send("Operation Completed. Check server console.");
-
   //Only for test!!!
   var user = new User({ username: 'dummyUser', password: 'dummyPassword'});
     user.save(function (err) {
       var result = "";
       if (err) {
-        result = "Error creating new user: " + err;
-        res.send(result);
+        console.log("Error creating new user: " + err);
       } else {
-        result = "New user created: " + user.speak();
-        res.send(result);
+        console.log("New user created: " + user.speak());
       }
   });
+
+  res.send("Operation Completed. Check server console.");
 });
 
 /*Read Collection*/
@@ -86,8 +84,6 @@ App.get('/test-read-collection', function (req, res) {
     db.once('open', function() {
       console.log("Database connection successfull");
     });
-
-  res.send("Operation Completed. Check server console.");
 
   User.find(function (err, users) {
     if (err) return console.error(err);
