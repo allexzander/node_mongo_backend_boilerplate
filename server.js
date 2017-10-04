@@ -30,23 +30,16 @@ App.get('/test-db-connection', function (req, res) {
   var mongoURI = String(MongoConfig.uri).replace("{username}", mongoLogin).replace("{password}", mongoPass);
     console.log("Connecting to database...");
     Mongoose.connect(mongoURI, { useMongoClient: true, promiseLibrary: global.Promise });
-
-    var result = "";
-
-    var onErrorConnectDB = function(err) {
-      result = "Failed to connect to Database: " + err;
-      res.send(result);
-      console.log(result);
-      return;
-    }
+    
     var db = Mongoose.connection;
-    db.on('error', onErrorConnectDB);
-    db.once('open', function() {
-      result = "Database connection successfull";
-      db.close();
-      res.send(result);
-      console.log(result);
+    db.on('error', function(err) {
+      console.log("Failed to connect to Database: " + err);
     });
+    db.once('open', function() {
+      console.log("Database connection successfull");
+    });
+
+    res.send("Operation Completed. Check server console.");
 });
 
 /*Create Collection*/
@@ -56,12 +49,17 @@ App.get('/test-db-create-collection', function (req, res) {
   Mongoose.connect(mongoURI, { useMongoClient: true, promiseLibrary: global.Promise });
 
   var db = Mongoose.connection;
-  db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', function() {
-    // we're connected!
+  db.on('error', function(err) {
+    console.log("Failed to connect to Database: " + err);
   });
-    //Only for test!!!
-    var user = new User({ username: 'dummyUser', password: 'dummyPassword'});
+  db.once('open', function() {
+    console.log("Database connection successfull");
+  });
+
+  res.send("Operation Completed. Check server console.");
+
+  //Only for test!!!
+  var user = new User({ username: 'dummyUser', password: 'dummyPassword'});
     user.save(function (err) {
       var result = "";
       if (err) {
@@ -81,11 +79,15 @@ App.get('/test-read-collection', function (req, res) {
   console.log("Connecting to database...");
   Mongoose.connect(mongoURI, { useMongoClient: true, promiseLibrary: global.Promise });
 
-  var db = Mongoose.connection;
-  db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', function() {
-    // we're connected!
-  });
+ var db = Mongoose.connection;
+    db.on('error', function(err) {
+      console.log("Failed to connect to Database: " + err);
+    });
+    db.once('open', function() {
+      console.log("Database connection successfull");
+    });
+
+  res.send("Operation Completed. Check server console.");
 
   User.find(function (err, users) {
     if (err) return console.error(err);
